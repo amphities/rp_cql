@@ -8,7 +8,7 @@ from stable_baselines3 import DQN
 
 from src.create_dataset import create_dataset_from_env
 from src.hyper_parameters import get_cql_hyperparameters, get_bc_hyperparameters
-from src.four_room_stuff.wrappers import gym_wrapper
+from four_room_stuff.wrappers import gym_wrapper
 from d3rlpy.algos import DiscreteCQLConfig, DiscreteBCConfig
 
 #dataset creation params
@@ -38,9 +38,9 @@ available_bc_batch_sizes = [25, 50, 100]
 #plotting params
 step_cap = 100
 
-# with open('datasets/optimal_dataset_flattened_372_1.pkl', 'rb') as readFile:
-#     # Serialize and save the data to the file
-#     optimal_dataset = pickle.load(readFile)
+with open('../datasets/optimal_dataset_flattened_372_1.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    optimal_dataset = pickle.load(readFile)
 #
 # with open('datasets/mixed_suboptimal_dataset_flattened_1000_1.pkl', 'rb') as readFile:
 #     # Serialize and save the data to the file
@@ -104,14 +104,6 @@ def create_dataset(dataset_type, size, seed):
     return create_dataset_from_env(train_env, dataset_type, size, model, chance_to_choose_optimal, random_walk_step_count_lower_bound, random_walk_step_count_upper_bound, seed)
 
 
-def train_agent(agent, n_steps, dataset):
-    agent.fit(
-        dataset,
-        n_steps=n_steps,
-        n_steps_per_epoch=1000,
-    )
-
-
 def run_cql_hyperparmeter_search(policy_datasets, dataset_type):
     evaluation_env_count = len(train_env_config['agent positions'])
     evaluation_env = gym_wrapper(gym.make('MiniGrid-FourRooms-v1',
@@ -165,6 +157,13 @@ def run_bc_hyperparmeter_search(policy_datasets, dataset_type):
         ).best_params
         pickle.dump(hyper_params, open('../hyper_params/hyper_params_bc_' + dataset_type + '_' + str((dataset_idx+1)) + '.pkl', 'wb'))
 
+def train_agent(agent, n_steps, dataset):
+    agent.fit(
+        dataset,
+        n_steps=n_steps,
+        n_steps_per_epoch=1000,
+    )
+
 
 def train_cql(policy_datasets, dataset_type):
     for dataset_idx, dataset in enumerate(policy_datasets):
@@ -206,13 +205,13 @@ def train_bc(policy_datasets, dataset_type):
 for dataset_seed in dataset_seeds:
     create_dataset(Dataset_types.EXPERT_SUBOPTMAL.value, 100, dataset_seed)
 
-# optimal_policy = [optimal_dataset]
+optimal_policy = [optimal_dataset]
 # mixed_suboptimal_policy_1000 = [mixed_dataset_1000_1, mixed_dataset_1000_2, mixed_dataset_1000_3]
 # mixed_suboptimal_policy_5000 = [mixed_dataset_5000_1, mixed_dataset_5000_2, mixed_dataset_5000_3]
 # mixed_suboptimal_policy_10000 = [mixed_dataset_10000_1, mixed_dataset_10000_2, mixed_dataset_10000_3]
 # mixed_suboptimal_policy_25000 = [mixed_dataset_25000_1, mixed_dataset_25000_2, mixed_dataset_25000_3]
 
-# run_cql_hyperparmeter_search(optimal_policy, 'optimal_372')
+run_cql_hyperparmeter_search(optimal_policy, 'optimal_372')
 # run_cql_hyperparmeter_search(mixed_suboptimal_policy_1000, 'mixed_suboptimal_1000')
 # run_cql_hyperparmeter_search(mixed_suboptimal_policy_5000, 'mixed_suboptimal_5000')
 # run_cql_hyperparmeter_search(mixed_suboptimal_policy_10000, 'mixed_suboptimal_10000')

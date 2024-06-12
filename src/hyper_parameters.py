@@ -4,9 +4,6 @@ import gymnasium as gym
 import optuna
 from functools import partial
 
-from src.four_room_stuff.env import FourRoomsEnv
-gym.register('MiniGrid-FourRooms-v1', FourRoomsEnv)
-
 def cql_objective(available_batch_sizes, learning_rate_change, alpha_range, evaluation_env, step_cap, evaluation_env_count, dataset, seeds, trial):
     batch_size = trial.suggest_categorical('batch_size', available_batch_sizes)
     learning_rate = trial.suggest_float('learning_rate', learning_rate_change[0], learning_rate_change[1], log=True)
@@ -16,10 +13,12 @@ def cql_objective(available_batch_sizes, learning_rate_change, alpha_range, eval
     for seed in seeds:
         d3rlpy.seed(seed)
         agent = d3rlpy.algos.DiscreteCQLConfig(batch_size=batch_size, learning_rate=learning_rate, alpha=alpha).create(device=True)
+        # don't want for logs to flood the drive while hyperparameter tuning
         agent.fit(
             dataset,
             n_steps=20000,
             n_steps_per_epoch=1000,
+            save_interval=999999999,
         )
 
         for _ in range(evaluation_env_count):
@@ -46,10 +45,12 @@ def bc_objective(available_batch_sizes, learning_rate_change, beta_range, evalua
     for seed in seeds:
         d3rlpy.seed(seed)
         agent = d3rlpy.algos.DiscreteBCConfig(batch_size=batch_size, learning_rate=learning_rate, beta=beta).create(device=True)
+        # don't want for logs to flood the drive while hyperparameter tuning
         agent.fit(
             dataset,
             n_steps=20000,
             n_steps_per_epoch=1000,
+            save_interval=999999999,
         )
 
         for _ in range(evaluation_env_count):
