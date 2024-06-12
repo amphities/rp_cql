@@ -12,7 +12,7 @@ from src.four_room_stuff.wrappers import gym_wrapper
 from d3rlpy.algos import DiscreteCQLConfig, DiscreteBCConfig
 
 #dataset creation params
-model = DQN.load("models/dqn_four_rooms")
+model = DQN.load("../models/dqn_four_rooms")
 chance_to_choose_optimal = 0.5
 random_walk_step_count_lower_bound = 10
 random_walk_step_count_upper_bound = 25
@@ -90,8 +90,8 @@ step_cap = 100
 #     # Serialize and save the data to the file
 #     mixed_dataset_25000_3 = pickle.load(readFile)
 #
-# with open('configs/fourrooms_train_config.pl', 'rb') as readFile:
-#     train_env_config = dill.load(readFile)
+with open('../configs/fourrooms_train_config.pl', 'rb') as readFile:
+    train_env_config = dill.load(readFile)
 
 
 def create_dataset(dataset_type, size, seed):
@@ -136,7 +136,7 @@ def run_cql_hyperparmeter_search(policy_datasets, dataset_type):
             evaluation_env_count=evaluation_env_count,
             dataset=dataset
         ).best_params
-        pickle.dump(hyper_params, open('hyper_params/hyper_params_cql_' + dataset_type + '_' + str(dataset_idx+1) + '.pkl', 'wb'))
+        pickle.dump(hyper_params, open('../hyper_params/hyper_params_cql_' + dataset_type + '_' + str(dataset_idx+1) + '.pkl', 'wb'))
 
 
 def run_bc_hyperparmeter_search(policy_datasets, dataset_type):
@@ -163,12 +163,12 @@ def run_bc_hyperparmeter_search(policy_datasets, dataset_type):
             evaluation_env_count=evaluation_env_count,
             dataset=dataset
         ).best_params
-        pickle.dump(hyper_params, open('hyper_params/hyper_params_bc_' + dataset_type + '_' + str((dataset_idx+1)) + '.pkl', 'wb'))
+        pickle.dump(hyper_params, open('../hyper_params/hyper_params_bc_' + dataset_type + '_' + str((dataset_idx+1)) + '.pkl', 'wb'))
 
 
 def train_cql(policy_datasets, dataset_type):
     for dataset_idx, dataset in enumerate(policy_datasets):
-        hyper_params = pickle.load(open('hyper_params/hyper_params_cql_' + dataset_type + '_' + str(dataset_idx+1) + '.pkl', 'rb'))
+        hyper_params = pickle.load(open('../hyper_params/hyper_params_cql_' + dataset_type + '_' + str(dataset_idx+1) + '.pkl', 'rb'))
         print(hyper_params)
         batch_size = hyper_params['batch_size']
         learning_rate = hyper_params['learning_rate']
@@ -187,7 +187,7 @@ def train_cql(policy_datasets, dataset_type):
 
 def train_bc(policy_datasets, dataset_type):
     for dataset_idx, dataset in enumerate(policy_datasets):
-        hyper_params = pickle.load(open('hyper_params/hyper_params_bc_' + dataset_type + '_' + str(dataset_idx+1) + '.pkl', 'rb'))
+        hyper_params = pickle.load(open('../hyper_params/hyper_params_bc_' + dataset_type + '_' + str(dataset_idx+1) + '.pkl', 'rb'))
         print(hyper_params)
         batch_size = hyper_params['batch_size']
         learning_rate = hyper_params['learning_rate']
@@ -203,8 +203,8 @@ def train_bc(policy_datasets, dataset_type):
             ).create(device=True)
             train_agent(agent, 50000, dataset)
 
-# for dataset_seed in dataset_seeds:
-#     create_dataset(Dataset_types.EXPERT_SUBOPTMAL.value, 25000, dataset_seed)
+for dataset_seed in dataset_seeds:
+    create_dataset(Dataset_types.EXPERT_SUBOPTMAL.value, 100, dataset_seed)
 
 # optimal_policy = [optimal_dataset]
 # mixed_suboptimal_policy_1000 = [mixed_dataset_1000_1, mixed_dataset_1000_2, mixed_dataset_1000_3]
@@ -223,5 +223,3 @@ def train_bc(policy_datasets, dataset_type):
 # run_bc_hyperparmeter_search(mixed_suboptimal_policy_5000, 'mixed_suboptimal_5000')
 # run_bc_hyperparmeter_search(mixed_suboptimal_policy_10000, 'mixed_suboptimal_10000')
 # run_bc_hyperparmeter_search(mixed_suboptimal_policy_25000, 'mixed_suboptimal_25000')
-
-

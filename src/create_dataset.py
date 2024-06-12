@@ -87,7 +87,7 @@ def create_dataset_from_env(env, dataset_mode, dataset_size, model, chance_to_ch
     dataset = MDPDataset(states, actions, rewards, terminal_flags, action_size=3)
 
     #Save the dataset
-    with open(f'datasets/{dataset_mode}_dataset_flattened_{dataset_size}_{seed}.pkl', 'wb') as writeFile:
+    with open(f'../datasets/{dataset_mode}_dataset_flattened_{dataset_size}_{seed}.pkl', 'wb') as writeFile:
         # Serialize and save the data to the file
         pickle.dump(dataset, writeFile)
     return dataset
