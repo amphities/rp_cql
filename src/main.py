@@ -11,9 +11,6 @@ from src.hyper_parameters import get_cql_hyperparameters, get_bc_hyperparameters
 from src.four_room_stuff.wrappers import gym_wrapper
 from d3rlpy.algos import DiscreteCQLConfig, DiscreteBCConfig
 
-with open('configs/fourrooms_test_0_config.pl', 'rb') as file:
-    train_config = dill.load(file)
-
 #dataset creation params
 model = DQN.load("models/dqn_four_rooms")
 chance_to_choose_optimal = 0.5
@@ -41,9 +38,9 @@ available_bc_batch_sizes = [25, 50, 100]
 #plotting params
 step_cap = 100
 
-with open('datasets/optimal_dataset_flattened_372_1.pkl', 'rb') as readFile:
-    # Serialize and save the data to the file
-    optimal_dataset = pickle.load(readFile)
+# with open('datasets/optimal_dataset_flattened_372_1.pkl', 'rb') as readFile:
+#     # Serialize and save the data to the file
+#     optimal_dataset = pickle.load(readFile)
 #
 # with open('datasets/mixed_suboptimal_dataset_flattened_1000_1.pkl', 'rb') as readFile:
 #     # Serialize and save the data to the file
@@ -57,44 +54,44 @@ with open('datasets/optimal_dataset_flattened_372_1.pkl', 'rb') as readFile:
 #     # Serialize and save the data to the file
 #     mixed_dataset_1000_3 = pickle.load(readFile)
 #
-with open('datasets/mixed_suboptimal_dataset_flattened_5000_1.pkl', 'rb') as readFile:
-    # Serialize and save the data to the file
-    mixed_dataset_5000_1 = pickle.load(readFile)
-
-with open('datasets/mixed_suboptimal_dataset_flattened_5000_2.pkl', 'rb') as readFile:
-    # Serialize and save the data to the file
-    mixed_dataset_5000_2 = pickle.load(readFile)
-
-with open('datasets/mixed_suboptimal_dataset_flattened_5000_3.pkl', 'rb') as readFile:
-    # Serialize and save the data to the file
-    mixed_dataset_5000_3 = pickle.load(readFile)
-
-with open('datasets/mixed_suboptimal_dataset_flattened_10000_1.pkl', 'rb') as readFile:
-    # Serialize and save the data to the file
-    mixed_dataset_10000_1 = pickle.load(readFile)
-
-with open('datasets/mixed_suboptimal_dataset_flattened_10000_2.pkl', 'rb') as readFile:
-    # Serialize and save the data to the file
-    mixed_dataset_10000_2 = pickle.load(readFile)
-
-with open('datasets/mixed_suboptimal_dataset_flattened_10000_3.pkl', 'rb') as readFile:
-    # Serialize and save the data to the file
-    mixed_dataset_10000_3 = pickle.load(readFile)
-
-with open('datasets/mixed_suboptimal_dataset_flattened_25000_1.pkl', 'rb') as readFile:
-    # Serialize and save the data to the file
-    mixed_dataset_25000_1 = pickle.load(readFile)
-
-with open('datasets/mixed_suboptimal_dataset_flattened_25000_2.pkl', 'rb') as readFile:
-    # Serialize and save the data to the file
-    mixed_dataset_25000_2 = pickle.load(readFile)
-
-with open('datasets/mixed_suboptimal_dataset_flattened_25000_3.pkl', 'rb') as readFile:
-    # Serialize and save the data to the file
-    mixed_dataset_25000_3 = pickle.load(readFile)
-
-with open('configs/fourrooms_train_config.pl', 'rb') as readFile:
-    train_env_config = dill.load(readFile)
+# with open('datasets/mixed_suboptimal_dataset_flattened_5000_1.pkl', 'rb') as readFile:
+#     # Serialize and save the data to the file
+#     mixed_dataset_5000_1 = pickle.load(readFile)
+#
+# with open('datasets/mixed_suboptimal_dataset_flattened_5000_2.pkl', 'rb') as readFile:
+#     # Serialize and save the data to the file
+#     mixed_dataset_5000_2 = pickle.load(readFile)
+#
+# with open('datasets/mixed_suboptimal_dataset_flattened_5000_3.pkl', 'rb') as readFile:
+#     # Serialize and save the data to the file
+#     mixed_dataset_5000_3 = pickle.load(readFile)
+#
+# with open('datasets/mixed_suboptimal_dataset_flattened_10000_1.pkl', 'rb') as readFile:
+#     # Serialize and save the data to the file
+#     mixed_dataset_10000_1 = pickle.load(readFile)
+#
+# with open('datasets/mixed_suboptimal_dataset_flattened_10000_2.pkl', 'rb') as readFile:
+#     # Serialize and save the data to the file
+#     mixed_dataset_10000_2 = pickle.load(readFile)
+#
+# with open('datasets/mixed_suboptimal_dataset_flattened_10000_3.pkl', 'rb') as readFile:
+#     # Serialize and save the data to the file
+#     mixed_dataset_10000_3 = pickle.load(readFile)
+#
+# with open('datasets/mixed_suboptimal_dataset_flattened_25000_1.pkl', 'rb') as readFile:
+#     # Serialize and save the data to the file
+#     mixed_dataset_25000_1 = pickle.load(readFile)
+#
+# with open('datasets/mixed_suboptimal_dataset_flattened_25000_2.pkl', 'rb') as readFile:
+#     # Serialize and save the data to the file
+#     mixed_dataset_25000_2 = pickle.load(readFile)
+#
+# with open('datasets/mixed_suboptimal_dataset_flattened_25000_3.pkl', 'rb') as readFile:
+#     # Serialize and save the data to the file
+#     mixed_dataset_25000_3 = pickle.load(readFile)
+#
+# with open('configs/fourrooms_train_config.pl', 'rb') as readFile:
+#     train_env_config = dill.load(readFile)
 
 
 def create_dataset(dataset_type, size, seed):
