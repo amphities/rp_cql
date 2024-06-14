@@ -15,7 +15,7 @@ from d3rlpy.algos import DiscreteCQLConfig, DiscreteBCConfig
 model = DQN.load("../models/dqn_four_rooms")
 chance_to_choose_optimal = 0.5
 random_walk_step_count_lower_bound = 10
-random_walk_step_count_upper_bound = 25
+random_walk_step_count_upper_bound = 50
 
 class Dataset_types(Enum):
     OPTIMAL = 'optimal'
@@ -92,6 +92,42 @@ with open('../datasets/mixed_suboptimal_dataset_flattened_25000_3.pkl', 'rb') as
 
 with open('../configs/fourrooms_train_config.pl', 'rb') as readFile:
     train_env_config = dill.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_5000_1.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_5000_1 = pickle.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_5000_2.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_5000_2 = pickle.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_5000_3.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_5000_3 = pickle.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_10000_1.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_10000_1 = pickle.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_10000_2.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_10000_2 = pickle.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_10000_3.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_10000_3 = pickle.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_25000_1.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_25000_1 = pickle.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_25000_2.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_25000_2 = pickle.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_25000_3.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_25000_3 = pickle.load(readFile)
 
 
 def create_dataset(dataset_type, size, seed):
@@ -203,11 +239,10 @@ def train_bc(policy_datasets, dataset_type, dataset_seeds):
             train_agent(agent, 50000, dataset)
 
 
-for dataset_seed in dataset_seeds:
-    create_dataset(Dataset_types.EXPERT_SUBOPTMAL.value, 100, dataset_seed)
-
 mixed_suboptimal_policy_5000 = [mixed_dataset_5000_1, mixed_dataset_5000_2, mixed_dataset_5000_3]
 mixed_suboptimal_policy_10000 = [mixed_dataset_10000_1, mixed_dataset_10000_2, mixed_dataset_10000_3]
 mixed_suboptimal_policy_25000 = [mixed_dataset_25000_1, mixed_dataset_25000_2, mixed_dataset_25000_3]
 
-train_cql(mixed_suboptimal_policy_10000, 'mixed_suboptimal_5000', dataset_seeds)
+random_walk_policy_5000 = [random_walk_dataset_5000_1, random_walk_dataset_5000_2, random_walk_dataset_5000_3]
+random_walk_policy_10000 = [random_walk_dataset_10000_1, random_walk_dataset_10000_2, random_walk_dataset_10000_3]
+random_walk_policy_25000 = [random_walk_dataset_25000_1, random_walk_dataset_25000_2, random_walk_dataset_25000_3]

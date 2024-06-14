@@ -39,7 +39,7 @@ def record_agent_actions(env, dataset_mode, dataset_size, model, chance_to_choos
                     action = optimal_policy(state)
                 case 'random_walk':
                     if random_walk_steps_remaining > 0:
-                        action = env.action_space.sample()
+                        action = random.randint(0, env.action_space.n - 1)
                         random_walk_steps_remaining -= 1
                     else:
                         action = optimal_policy(state)
