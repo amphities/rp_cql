@@ -17,10 +17,12 @@ chance_to_choose_optimal = 0.5
 random_walk_step_count_lower_bound = 10
 random_walk_step_count_upper_bound = 50
 
+
 class Dataset_types(Enum):
     OPTIMAL = 'optimal'
     EXPERT_SUBOPTMAL = 'mixed_suboptimal'
     RANDOM_WALK = 'random_walk'
+
 
 #seeds for reproducible results
 training_seeds = [0, 4219, 17333, 39779, 44987]
@@ -90,6 +92,18 @@ with open('../datasets/mixed_suboptimal_dataset_flattened_25000_3.pkl', 'rb') as
     # Serialize and save the data to the file
     mixed_dataset_25000_3 = pickle.load(readFile)
 
+with open('../datasets/mixed_suboptimal_dataset_flattened_100000_1.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    mixed_dataset_100000_1 = pickle.load(readFile)
+
+with open('../datasets/mixed_suboptimal_dataset_flattened_100000_2.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    mixed_dataset_100000_2 = pickle.load(readFile)
+
+with open('../datasets/mixed_suboptimal_dataset_flattened_100000_3.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    mixed_dataset_100000_3 = pickle.load(readFile)
+
 with open('../configs/fourrooms_train_config.pl', 'rb') as readFile:
     train_env_config = dill.load(readFile)
 
@@ -128,6 +142,18 @@ with open('../datasets/random_walk_dataset_flattened_25000_2.pkl', 'rb') as read
 with open('../datasets/random_walk_dataset_flattened_25000_3.pkl', 'rb') as readFile:
     # Serialize and save the data to the file
     random_walk_dataset_25000_3 = pickle.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_100000_1.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_100000_1 = pickle.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_100000_2.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_100000_2 = pickle.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_100000_3.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_100000_3 = pickle.load(readFile)
 
 
 def create_dataset(dataset_type, size, seed):
@@ -237,12 +263,27 @@ def train_bc(policy_datasets, dataset_type, dataset_seeds):
                 beta=beta
             ).create(device=True)
             train_agent(agent, 50000, dataset)
+#
+# def get_rewards_from_policy(policy, reward_save_path, env_count, env):
+#     bc_path = ('../models/bc/'
+#                '')
+#     cql_path = '../models/cql/mixed_suboptimal_25000'
+#     plot_save_path = '../plots/bc_cql/mixed_suboptimal_25000/rewards'
+#     get_rewards_over_policy(training_seeds, dataset_seeds, cql_path, '../rewards/cql/reachable/mixed_suboptimal_25000', reachable_env, len(train_config['agent positions']))
+#     get_rewards_over_policy(training_seeds, dataset_seeds, bc_path, '../rewards/bc/reachable/mixed_suboptimal_25000', reachable_env, len(train_config['agent positions']))
+#     get_rewards_over_policy(training_seeds, dataset_seeds, cql_path, '../rewards/cql/unreachable/mixed_suboptimal_25000', unreachable_env, len(train_config['agent positions']))
+#     get_rewards_over_policy(training_seeds, dataset_seeds, bc_path, '../rewards/bc/unreachable/mixed_suboptimal_25000', unreachable_env, len(train_config['agent positions']))
 
 
-mixed_suboptimal_policy_5000 = [mixed_dataset_5000_1, mixed_dataset_5000_2, mixed_dataset_5000_3]
-mixed_suboptimal_policy_10000 = [mixed_dataset_10000_1, mixed_dataset_10000_2, mixed_dataset_10000_3]
-mixed_suboptimal_policy_25000 = [mixed_dataset_25000_1, mixed_dataset_25000_2, mixed_dataset_25000_3]
+mixed_suboptimal_datasets_5000 = [mixed_dataset_5000_1, mixed_dataset_5000_2, mixed_dataset_5000_3]
+mixed_suboptimal_datasets_10000 = [mixed_dataset_10000_1, mixed_dataset_10000_2, mixed_dataset_10000_3]
+mixed_suboptimal_datasets_25000 = [mixed_dataset_25000_1, mixed_dataset_25000_2, mixed_dataset_25000_3]
+mixed_suboptimal_datasets_100000 = [mixed_dataset_100000_1, mixed_dataset_100000_2, mixed_dataset_100000_3]
 
-random_walk_policy_5000 = [random_walk_dataset_5000_1, random_walk_dataset_5000_2, random_walk_dataset_5000_3]
-random_walk_policy_10000 = [random_walk_dataset_10000_1, random_walk_dataset_10000_2, random_walk_dataset_10000_3]
-random_walk_policy_25000 = [random_walk_dataset_25000_1, random_walk_dataset_25000_2, random_walk_dataset_25000_3]
+random_walk_datasets_5000 = [random_walk_dataset_5000_1, random_walk_dataset_5000_2, random_walk_dataset_5000_3]
+random_walk_datasets_10000 = [random_walk_dataset_10000_1, random_walk_dataset_10000_2, random_walk_dataset_10000_3]
+random_walk_datasets_25000 = [random_walk_dataset_25000_1, random_walk_dataset_25000_2, random_walk_dataset_25000_3]
+random_walk_datasets_100000 = [random_walk_dataset_100000_1, random_walk_dataset_100000_2, random_walk_dataset_100000_3]
+
+for dataset_seed in dataset_seeds:
+    create_dataset(Dataset_types.EXPERT_SUBOPTMAL.value, 100000, dataset_seed)
