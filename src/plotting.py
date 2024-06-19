@@ -77,7 +77,7 @@ def get_step_counts_per_agent(agents, env, env_count):
     return step_counts
 
 
-def plot_agent_overall(ax, training_seeds, dir_path, env, train_env_count, color, offset):
+def plot_agent_overall(ax, training_seeds, dir_path, env, env_count, color, offset):
     step_counts = []
     for seed in training_seeds:
         dir_seed_path = dir_path + '/' + str(seed)
@@ -87,7 +87,7 @@ def plot_agent_overall(ax, training_seeds, dir_path, env, train_env_count, color
         for agent_name in agent_names:
             agents.append(d3rlpy.load_learnable(dir_seed_path + '/' + agent_name))
 
-        step_counts.append(get_step_counts_per_agent(agents, env, train_env_count))
+        step_counts.append(get_step_counts_per_agent(agents, env, env_count))
 
     mean_steps = np.mean(step_counts, axis=0)
     std_err = stats.sem(step_counts, axis=0)
@@ -98,7 +98,7 @@ def plot_agent_overall(ax, training_seeds, dir_path, env, train_env_count, color
     ax.set_xticks(range(len(agents)), [str((i+1) * 1000) for i in range(len(agents))])
 
 
-def get_rewards_over_policy(training_seeds, dataset_seeds, dir_path, save_path, env, train_env_count):
+def get_rewards_over_datasets_for_config(training_seeds, dataset_seeds, dir_path, save_path, env, env_count):
     rewards_over_policy = {}
     for dataset_seed in dataset_seeds:
         print('dataset seed', dataset_seed)
@@ -110,8 +110,15 @@ def get_rewards_over_policy(training_seeds, dataset_seeds, dir_path, save_path, 
             agent_names = sorted(filter(lambda x: x.endswith('.d3'), os.listdir(dir_seed_path)), key=extract_number)
             for agent_name in agent_names:
                 agent = d3rlpy.load_learnable(dir_seed_path + '/' + agent_name)
-                rewards_over_policy[dataset_seed][training_seed].append(get_rewards_for_agent(agent, env, train_env_count))
+                rewards_over_policy[dataset_seed][training_seed].append(get_rewards_for_agent(agent, env, env_count))
     pickle.dump(rewards_over_policy, open(save_path, 'wb'))
+
+def get_rewards_over_datasets(training_seeds, dataset_seeds, dataset_name, bc_model_dir, cql_model_dir, bc_reward_dir, cql_reward_dir, config_dirs, envs, env_count):
+    for config_idx, config_dir in enumerate(config_dirs):
+        # cql_reward_path = cql_reward_dir + '/' + config_dir + '/' + dataset_name
+        # get_rewards_over_datasets_for_config(training_seeds, dataset_seeds, cql_model_dir, cql_reward_path, envs[config_idx], env_count)
+        bc_reward_path = bc_reward_dir + '/' + config_dir + '/' + dataset_name
+        get_rewards_over_datasets_for_config(training_seeds, dataset_seeds, bc_model_dir, bc_reward_path, envs[config_idx], env_count)
 
 def get_best_reward_and_rewards(training_seeds, dataset_seeds, reward_dir_path):
     with open(reward_dir_path, 'rb') as file:
@@ -151,14 +158,14 @@ def plot_agent_rewards(training_seeds, dataset_seeds, reward_dir_path, color, la
 
 def plot_agent_reward_per_config(config_dirs, dataset, titles, training_seeds, dataset_seeds, cql_reward_dir, bc_reward_dir, plot_save_path):
     for config_idx, config_dir in enumerate(config_dirs):
-        plt.figure(figsize=(15, 5))
+        plt.figure()
         bc_reward_path = bc_reward_dir + '/' + config_dir + '/' + dataset
         cql_reward_path = cql_reward_dir + '/' + config_dir + '/' + dataset
         plot_agent_rewards(training_seeds, dataset_seeds, bc_reward_path, 'blue', label='bc')
         plot_agent_rewards(training_seeds, dataset_seeds, cql_reward_path, 'orange', label='cql')
-        plt.title(titles[config_idx])
+        # plt.title(titles[config_idx])
         plt.ylabel('Average reward over all environments')
-        plt.ylim(0, 1)
+        plt.ylim(0, 1.1)
         plt.legend()
 
         plt.savefig(f"{plot_save_path}_{config_dir}.png", bbox_inches='tight')
@@ -184,7 +191,7 @@ def plot_best_agent_reward_per_config(training_seeds, dataset_seeds, cql_reward_
             x_labels.append(datasets[reward_index])
         ax.set_xticks(range(len(datasets)))
         ax.set_xticklabels(x_labels)
-        ax.set_ylim(0, 1)
+        ax.set_ylim(0, 1.1)
         blue_patch = mpatches.Patch(color='blue', label='bc')
         orange_patch = mpatches.Patch(color='orange', label='cql')
         ax.legend(handles=[blue_patch, orange_patch])
@@ -215,12 +222,11 @@ unreachable_env = gym_wrapper(gym.make('MiniGrid-FourRooms-v1',
 
 config_dirs = ['train', 'reachable', 'unreachable']
 policy = 'random_walk'
-datasets = [policy + '_5000', policy + '_10000', policy + '_25000']
+datasets = [policy + '_5000', policy + '_10000', policy + '_25000', policy + '_100000']
+# datasets = [policy]
 cql_reward_dir = '../rewards/cql'
 bc_reward_dir = '../rewards/bc'
 for dataset in datasets:
-    bc_model_path = '../models/bc/' + dataset
-    cql_model_path = '../models/cql/' + dataset
     all_plot_save_path = '../plots/bc_cql/' + dataset + '_all'
     titles = [
         'Average reward for dataset ' + dataset + ' over 1k training step increments for the train set',
@@ -229,16 +235,15 @@ for dataset in datasets:
     ]
     plot_agent_reward_per_config(config_dirs, dataset, titles, training_seeds, dataset_seeds, cql_reward_dir, bc_reward_dir, all_plot_save_path)
 
-best_plot_save_path = '../plots/bc_cql/' + policy + '_best'
-plot_best_agent_reward_per_config(training_seeds, dataset_seeds, cql_reward_dir, bc_reward_dir, config_dirs, datasets, best_plot_save_path)
+# best_plot_save_path = '../plots/bc_cql/' + policy + '_best'
+# plot_best_agent_reward_per_config(training_seeds, [1], cql_reward_dir, bc_reward_dir, config_dirs, datasets, best_plot_save_path)
 
 
 
 
-# get_rewards_over_policy(training_seeds, dataset_seeds, cql_path, cql_reward_paths[0], train_env, len(train_config['agent positions']))
-# get_rewards_over_policy(training_seeds, dataset_seeds, cql_path, cql_reward_paths[1], reachable_env, len(train_config['agent positions']))
-# get_rewards_over_policy(training_seeds, dataset_seeds, cql_path, cql_reward_paths[2], unreachable_env, len(train_config['agent positions']))
-
-# get_rewards_over_policy(training_seeds, dataset_seeds, bc_path, bc_reward_paths[0], train_env, len(train_config['agent positions']))
-# get_rewards_over_policy(training_seeds, dataset_seeds, bc_path, bc_reward_paths[1], reachable_env, len(train_config['agent positions']))
-# get_rewards_over_policy(training_seeds, dataset_seeds, bc_path, bc_reward_paths[2], unreachable_env, len(train_config['agent positions']))
+dataset = 'optimal'
+bc_model_path = '../models/bc/' + dataset
+cql_model_path = '../models/cql/' + dataset
+# get_rewards_over_datasets(training_seeds, [1], dataset, bc_model_path, cql_model_path, bc_reward_dir, cql_reward_dir, [config_dirs[0]], [config_envs[0]], len(train_config['agent positions']))
+# get_rewards_over_datasets(training_seeds, [1], dataset, bc_model_path, cql_model_path, bc_reward_dir, cql_reward_dir, [config_dirs[1]], [config_envs[1]], len(train_config['agent positions']))
+# get_rewards_over_datasets(training_seeds, [1], dataset, bc_model_path, cql_model_path, bc_reward_dir, cql_reward_dir, [config_dirs[2]], [config_envs[2]], len(train_config['agent positions']))

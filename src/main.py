@@ -4,6 +4,7 @@ from enum import Enum
 import d3rlpy
 import dill
 import gymnasium as gym
+import numpy as np
 from stable_baselines3 import DQN
 
 from src.create_dataset import create_dataset_from_env
@@ -43,19 +44,19 @@ step_cap = 100
 with open('../datasets/optimal_dataset_flattened_372_1.pkl', 'rb') as readFile:
     # Serialize and save the data to the file
     optimal_dataset = pickle.load(readFile)
-#
-# with open('datasets/mixed_suboptimal_dataset_flattened_1000_1.pkl', 'rb') as readFile:
-#     # Serialize and save the data to the file
-#     mixed_dataset_1000_1 = pickle.load(readFile)
-#
-# with open('datasets/mixed_suboptimal_dataset_flattened_1000_2.pkl', 'rb') as readFile:
-#     # Serialize and save the data to the file
-#     mixed_dataset_1000_2 = pickle.load(readFile)
-#
-# with open('datasets/mixed_suboptimal_dataset_flattened_1000_3.pkl', 'rb') as readFile:
-#     # Serialize and save the data to the file
-#     mixed_dataset_1000_3 = pickle.load(readFile)
-#
+
+with open('../datasets/mixed_suboptimal_dataset_flattened_1000_1.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    mixed_dataset_1000_1 = pickle.load(readFile)
+
+with open('../datasets/mixed_suboptimal_dataset_flattened_1000_2.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    mixed_dataset_1000_2 = pickle.load(readFile)
+
+with open('../datasets/mixed_suboptimal_dataset_flattened_1000_3.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    mixed_dataset_1000_3 = pickle.load(readFile)
+
 with open('../datasets/mixed_suboptimal_dataset_flattened_5000_1.pkl', 'rb') as readFile:
     # Serialize and save the data to the file
     mixed_dataset_5000_1 = pickle.load(readFile)
@@ -106,6 +107,18 @@ with open('../datasets/mixed_suboptimal_dataset_flattened_100000_3.pkl', 'rb') a
 
 with open('../configs/fourrooms_train_config.pl', 'rb') as readFile:
     train_env_config = dill.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_1000_1.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_1000_1 = pickle.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_1000_2.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_1000_2 = pickle.load(readFile)
+
+with open('../datasets/random_walk_dataset_flattened_1000_3.pkl', 'rb') as readFile:
+    # Serialize and save the data to the file
+    random_walk_dataset_1000_3 = pickle.load(readFile)
 
 with open('../datasets/random_walk_dataset_flattened_5000_1.pkl', 'rb') as readFile:
     # Serialize and save the data to the file
@@ -263,27 +276,48 @@ def train_bc(policy_datasets, dataset_type, dataset_seeds):
                 beta=beta
             ).create(device=True)
             train_agent(agent, 50000, dataset)
-#
-# def get_rewards_from_policy(policy, reward_save_path, env_count, env):
-#     bc_path = ('../models/bc/'
-#                '')
-#     cql_path = '../models/cql/mixed_suboptimal_25000'
-#     plot_save_path = '../plots/bc_cql/mixed_suboptimal_25000/rewards'
-#     get_rewards_over_policy(training_seeds, dataset_seeds, cql_path, '../rewards/cql/reachable/mixed_suboptimal_25000', reachable_env, len(train_config['agent positions']))
-#     get_rewards_over_policy(training_seeds, dataset_seeds, bc_path, '../rewards/bc/reachable/mixed_suboptimal_25000', reachable_env, len(train_config['agent positions']))
-#     get_rewards_over_policy(training_seeds, dataset_seeds, cql_path, '../rewards/cql/unreachable/mixed_suboptimal_25000', unreachable_env, len(train_config['agent positions']))
-#     get_rewards_over_policy(training_seeds, dataset_seeds, bc_path, '../rewards/bc/unreachable/mixed_suboptimal_25000', unreachable_env, len(train_config['agent positions']))
 
+def print_latex_hyper_params_bc(datasets, dataset_seeds):
+    for dataset_idx, dataset in enumerate(datasets):
+        print("\multirow{" + dataset.replace('_', '\\_') + "}")
+        for dataset_seed in dataset_seeds:
+            hyper_params = pickle.load(
+                open('../hyper_params/hyper_params_bc_' + dataset + '_' + str(dataset_seed) + '.pkl', 'rb'))
+            print('& ' + str(dataset_seed) + ' & ' + str(hyper_params['learning_rate']) + ' & ' + str(hyper_params['batch_size']) + ' & ' + str(hyper_params['beta']) + ' \\\\')
 
+def print_latex_hyper_params_cql(datasets, dataset_seeds):
+    for dataset_idx, dataset in enumerate(datasets):
+        print("\multirow{" + dataset.replace('_', '\\_') + "}")
+        for dataset_seed in dataset_seeds:
+            hyper_params = pickle.load(
+                open('../hyper_params/hyper_params_cql_' + dataset + '_' + str(dataset_seed) + '.pkl', 'rb'))
+            print('& ' + str(dataset_seed) + ' & ' + str(hyper_params['learning_rate']) + ' & ' + str(hyper_params['batch_size']) + ' & ' + str(hyper_params['alpha']) + ' \\\\')
+
+optimal_datasets = [optimal_dataset]
+
+mixed_suboptimal_datasets_1000 = [mixed_dataset_1000_1, mixed_dataset_1000_2, mixed_dataset_1000_3]
 mixed_suboptimal_datasets_5000 = [mixed_dataset_5000_1, mixed_dataset_5000_2, mixed_dataset_5000_3]
 mixed_suboptimal_datasets_10000 = [mixed_dataset_10000_1, mixed_dataset_10000_2, mixed_dataset_10000_3]
 mixed_suboptimal_datasets_25000 = [mixed_dataset_25000_1, mixed_dataset_25000_2, mixed_dataset_25000_3]
 mixed_suboptimal_datasets_100000 = [mixed_dataset_100000_1, mixed_dataset_100000_2, mixed_dataset_100000_3]
 
+random_walk_datasets_1000 = [random_walk_dataset_1000_1, random_walk_dataset_1000_2, random_walk_dataset_1000_3]
 random_walk_datasets_5000 = [random_walk_dataset_5000_1, random_walk_dataset_5000_2, random_walk_dataset_5000_3]
 random_walk_datasets_10000 = [random_walk_dataset_10000_1, random_walk_dataset_10000_2, random_walk_dataset_10000_3]
 random_walk_datasets_25000 = [random_walk_dataset_25000_1, random_walk_dataset_25000_2, random_walk_dataset_25000_3]
 random_walk_datasets_100000 = [random_walk_dataset_100000_1, random_walk_dataset_100000_2, random_walk_dataset_100000_3]
 
+policy = 'optimal_372'
+datasets = [policy]
+print_latex_hyper_params_cql(datasets, [1])
+
+policy = 'mixed_suboptimal'
+datasets = [policy + '_5000', policy + '_10000', policy + '_25000', policy + '_100000']
+print_latex_hyper_params_cql(datasets, dataset_seeds)
+
+policy = 'random_walk'
+datasets = [policy + '_5000', policy + '_10000', policy + '_25000', policy + '_100000']
+print_latex_hyper_params_cql(datasets, dataset_seeds)
+
 for dataset_seed in dataset_seeds:
-    create_dataset(Dataset_types.EXPERT_SUBOPTMAL.value, 100000, dataset_seed)
+    create_dataset(Dataset_types.EXPERT_SUBOPTMAL.value, 1000, dataset_seed)
