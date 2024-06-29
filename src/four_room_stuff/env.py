@@ -384,8 +384,8 @@ class   PosterEnv(MiniGridEnv):
 
         super().__init__(
             mission_space=mission_space,
-            width=70,
-            height=50,
+            width=27,
+            height=15,
             max_steps=max_steps,
             highlight=False,
             **kwargs
@@ -415,38 +415,9 @@ class   PosterEnv(MiniGridEnv):
         self.grid.vert_wall(0, 0)
         self.grid.vert_wall(width - 1, 0)
 
-        for i in range(5, height):
-            if i > 40 and i < 45:
-                continue
-            self.grid.set(27, i, Wall())
-
-        for i in range(0, width):
-            if i > 20 and i < 25:
-                continue
-            self.grid.set(i, 5, Wall())
-
-        for i in range(0, 27):
-            if i > 15 and i < 20:
-                continue
-            self.grid.set(i, 30, Wall())
-
-        for i in range(27, width):
-            if i > 55 and i < 60:
-                self.put_obj(Door(color="red"),i, 34)
-                continue
-            self.grid.set(i, 34, Wall())
-
-        for i in range(27, width):
-            if i > 40 and i < 45:
-                self.put_obj(Door(color="blue"),i, 15)
-                continue
-            self.grid.set(i, 15, Wall())
-
         self.place_agent()
-        agent_pos = (22, 5)
+        agent_pos = (5, 7)
         self.agent_pos = agent_pos
         self.grid.set(*agent_pos, None)
-        self.agent_dir = 1
-        self.put_obj(Goal(), 60, 8)
-        self.put_obj(Key(color="blue"),50, 17)
-        self.put_obj(Key(color="red"),49, 47)
+        self.agent_dir = 0
+        self.put_obj(Goal(), 19, 7)

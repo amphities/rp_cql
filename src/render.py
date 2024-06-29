@@ -16,20 +16,11 @@ import d3rlpy
 gym.register('MiniGrid-FourRooms-v1', FourRoomsEnv)
 
 
-dataset_name = 'fourrooms_test_100_config.pl'
-dataset_mode = 'mixed'
-agent_mode = 'cql'
-model_name = 'cql_mixed_50000.d3'
+config_name = 'fourrooms_test_0_config.pl'
 step_count = 40
 
-with open('../configs/' + dataset_name, 'rb') as file:
+with open('../configs/' + config_name, 'rb') as file:
     config = dill.load(file)
-
-# number of episodes and steps per episode
-chance_to_choose_optimal = 0.5
-
-
-# define your custom policy here
 def optimal_policy(state):
     state = obs_to_state(state)
     q_values = find_all_action_values(state[:2], state[2], state[3:5], state[5:], 0.99)
@@ -51,14 +42,9 @@ with Display(visible=False) as disp:
                            agent_dir=config['agent directions'],
                            render_mode="rgb_array"))
     images = []
-    #
-    # if agent_mode == 'bc':
-    #     agent = d3rlpy.load_learnable('../models/bc/' + dataset_mode + '/' + model_name)
-    # elif agent_mode == 'cql':
-    #     agent = d3rlpy.load_learnable('../models/cql/' + dataset_mode + '/' + model_name)
 
     finished = 0
-    for i in range(len(config['topologies'])):
+    for i in range(1):
         obs, _ = env.reset()
         img = env.render()
         images.append(img)
@@ -77,7 +63,7 @@ with Display(visible=False) as disp:
 
     print(finished)
 
-    gif_name = '../gifs/asdsa.gif'
+    gif_name = '../gifs/unreachable.gif'
 
     # Use the determined gif name when saving the gif
     imageio.mimsave(gif_name, [np.array(img) for i, img in enumerate(images) if i % 1 == 0], duration=1000)

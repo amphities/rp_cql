@@ -309,15 +309,17 @@ random_walk_datasets_100000 = [random_walk_dataset_100000_1, random_walk_dataset
 
 policy = 'optimal_372'
 datasets = [policy]
-print_latex_hyper_params_cql(datasets, [1])
+print_latex_hyper_params_bc(datasets, [1])
 
 policy = 'mixed_suboptimal'
-datasets = [policy + '_5000', policy + '_10000', policy + '_25000', policy + '_100000']
-print_latex_hyper_params_cql(datasets, dataset_seeds)
+datasets = [policy + '_1000', policy + '_5000', policy + '_10000', policy + '_25000', policy + '_100000']
+print_latex_hyper_params_bc(datasets, dataset_seeds)
 
 policy = 'random_walk'
-datasets = [policy + '_5000', policy + '_10000', policy + '_25000', policy + '_100000']
-print_latex_hyper_params_cql(datasets, dataset_seeds)
+datasets = [policy + '_1000', policy + '_5000', policy + '_10000', policy + '_25000', policy + '_100000']
+print_latex_hyper_params_bc(datasets, dataset_seeds)
 
-for dataset_seed in dataset_seeds:
-    create_dataset(Dataset_types.EXPERT_SUBOPTMAL.value, 1000, dataset_seed)
+# for dataset_seed in dataset_seeds:
+#     create_dataset(Dataset_types.OPTIMAL.value, 372, 1)
+
+# train_cql(random_walk_datasets_1000, Dataset_types.RANDOM_WALK.value + '_1000', dataset_seeds)
